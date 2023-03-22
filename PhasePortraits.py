@@ -14,7 +14,7 @@ xlimneg = -128*2
 ylimpos = 128*2
 ylimneg = -128*2
 spacing = 16
-amountsolve = 0
+amountsolve = 4
 limdivisor = 1
 
 tspanstart = 0
