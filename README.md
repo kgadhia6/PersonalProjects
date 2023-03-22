@@ -12,6 +12,7 @@ Compartmental epidemiological model implemented the following compartments & vit
  - Quarantined
  - Carriers
  - & Deceased
+ 
 Utilizes numpy and matplotlib
 
 PhasePortraits.py:
