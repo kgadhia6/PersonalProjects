@@ -1,0 +1,35 @@
+import numpy as np
+import matplotlib.pyplot as plt
+plt.rcParams["mathtext.fontset"] = 'stix'
+
+#Parameters
+xyz0 = (0., 1., 1.05) #Initial value tuple (x0, y0, z0)
+rho = 28
+sigma = 10
+beta = 8/3
+
+#Differential equation
+def diffeq(xyz: "Coordinate tuple; point of interest") -> "Gradient at (x,y,z); ndarray (3,)":
+    x, y, z = xyz #Unpacking x, y, and z
+    dx = sigma*(y - x)
+    dy = x*(rho - z) - y
+    dz = x*y - beta*z
+    return np.array([dx, dy, dz])
+
+dt = .01 #Psuedo-dimension time
+stepnum = 10000
+
+points = np.zeros((stepnum + 1, 3)) #1 more for initial value, and 3 for the x, y, and z
+points[0] = xyz0
+for i in range(stepnum):
+    points[i+1] = points[0] + diffeq(points[0]) * dt #Iterating through; Classic Euler method
+    continue
+
+#And now onto the best part, plotting!
+ax = plt.figure().add_subplot(projection='3d')
+ax.plot(*points.T) #Transpose the axes to actually get our coordinates
+ax.set_xlabel(r'$x\mathrm{-label}$')
+ax.set_ylabel(r'$y\mathrm{-label}$')
+ax.set_zlabel(r'$z\mathrm{-label}$')
+ax.set_title(r'$\mathrm{Lorenz Attractor, } \rho = ' + str(rho) + r', \sigma = ' + str(sigma) + r', \beta = ' + str(round(beta, 2)) + r'$')
+plt.show()
