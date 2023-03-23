@@ -37,7 +37,7 @@ for i, val in np.ndenumerate(mag):
 ax.set_xlabel(r'$x\mathrm{-axis}$')
 ax.set_ylabel(r'$y\mathrm{-axis}$')
 ax.set_zlabel(r'$z\mathrm{-axis}$')
-ax.set_title(r'$\mathrm{Lorenz\ Phase\ Space}$, $\rho = 28,\/ \sigma = 10,\/ \beta = \frac{8}{3}$')
+ax.set_title(r'$\mathrm{Lorenz\ Phase\ Space}$, $\rho = %s,\/ \sigma = %s,\/ \beta = %.2f$' % (rho, sigma, beta))
 cbar = plt.colorbar(mappable, location='left')
 cbar.set_label(r'$\mathrm{Magnitude}$')
 plt.show()
