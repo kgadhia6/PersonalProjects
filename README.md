@@ -1,5 +1,6 @@
-# 2023Projects
-All of the projects I have worked on up to and during 2023 that I am willing to publicly upload. Descriptions of each file are included in the README.md file.
+# Personal Projects
+A majority of my personal projects that I'm proud of / working on, largely those relating to applied mathematics though.
+
 
 --Project Descriptions--
 
@@ -18,6 +19,10 @@ Utilizes numpy and matplotlib
 PhasePortraits.py:
 Plots the phase portrait of a given system of differential equations along with some of the actual solutions.
 Utilizes numpy, matplotlib, and scipy.integrate. scipy.integrate is used for the actual solutions, everything else is done via matplotlib
+
+PhasePortraits3D.py:
+Plots the 3 dimensional phase portrait of a given 3 variable system of differential equations. Is by default configured to that of the 3D Lorenz system.
+Utilizes numpy, and matplotlib.
 
 DoublePendulum.py:
 Utilization of a second order differential equation solver from scipy to graph the path of a double pendulum given initial conditions.
