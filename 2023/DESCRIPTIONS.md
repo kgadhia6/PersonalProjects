@@ -1,3 +1,4 @@
+#DESCRIPTIONS.md
 EulerDiffEqMethod.py: Plots the solutions of a first order system of ordinary differential equations using the Euler forward step method.
 Utilizes numpy and matplotlib.
 
