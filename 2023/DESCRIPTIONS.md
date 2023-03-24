@@ -15,3 +15,7 @@ Utilizes numpy, sympy, and matplotlib.
 
 PhasePortraits3D.py: Plots the 3D vector field of the phase portrait of a 3D system of ordinary differential equations.
 Utilizes numpy, and matplotlib.
+
+
+3DRK4.py: Plots the solutions of a system of ordinary differential equations using an implementation of the 4th order Runge-Kutta algorithm.
+Utilizes numpy, and matplotlib.
