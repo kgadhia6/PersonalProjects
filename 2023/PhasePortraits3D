@@ -14,7 +14,7 @@ c = 14
 
 #Graphical parameters
 linelength = 2.5
-elev = 15
+elev = 10
 azim = -60
 colormap = plt.cm.get_cmap("viridis")
 numlevels = 100
@@ -23,7 +23,7 @@ name = "Rössler\ Attractor" #Use matplotlib mathtext
 var1 = r'a' #Use mathtext for these and other variables
 var2 = r'b'
 var3 = r'c'
-title = ((r'$\mathrm{%s\ Phase\ Space}$' % (name)) + "\n" +  '$%s = %.1f, %s = %.1f, %s = %.1f$' % (var1, a, var2, b, var3, c))
+title = ((r'$\mathrm{%s\ Phase\ Space}$' % (name)) + "\n" +  '$%s = %.1f,\/ %s = %.1f,\/ %s = %.1f$' % (var1, a, var2, b, var3, c))
 
 def diffeq(x: float, y: float, z: float) -> np.ndarray:
     dx = -y - z
