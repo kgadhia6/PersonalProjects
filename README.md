@@ -40,3 +40,7 @@ Utilizes numpy, and matplotlib.
 VectorFields.py:
 Given a vector-valued function (2 inputs, x and y; 2 outputs, i and j), it'll plot the vector field of the function, then compute and plot the divergence and curl as filled contour plots. It compute the necessary derivatives symbolically, filling in with finite approximations when the Derivative objects of sympy fail to resolve.
 Utilizes numpy, matplotlib, and sympy.
+
+EulerDiffEqMethod.py:
+Utilizes the Euler method of discretizing a system of differential equations in order to 'step' it forward and plot it.
+Utilizes numpy, and matplotlib.
