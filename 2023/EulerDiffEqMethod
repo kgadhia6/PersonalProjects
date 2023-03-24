@@ -9,13 +9,13 @@ b = 0.1
 c = 14
 
 #Graph settings (Mostly title)
-elev = 15
+elev = 30
 azim = -60
 name = "Rössler\ Attractor" #Add the \[space] for any spaces
 var1 = 'a' #System variable names; use matplotlib mathtext for these
 var2 = 'b' #e.g \alpha for alpha
 var3 = 'c' #Fractions can also be used
-title = ((r'$\mathrm{%s\ via\ Euler\ method}$' % (name)) + "\n" +  r'$a = %.1f, b = %.1f, c = %.1f $' % (a, b, c))
+title = ((r'$\mathrm{%s\ via\ Euler\ method}$' % (name)) + "\n" +  r'$a = %.1f,\/ b = %.1f,\/ c = %.1f $' % (a, b, c))
 
 #Differential equation
 def diffeq(xyz: "Coordinate tuple; point of interest") -> "Gradient at (x,y,z); ndarray (3,)":
