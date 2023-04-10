@@ -1,0 +1,21 @@
+#Initialized Variables & Constants
+G = 6.674 * 10**(-11)
+planets = []
+
+#Classes
+class planet:
+    def __init__(self, mass: float, pos: tuple, v0: tuple):
+        global planets
+        self.m = mass
+        self.x, self.y = pos
+        self.v = v0
+        planets.append(self)
+        
+    def __str__(self):
+        return f'planet: mass = {self.m}; position = ({self.x}, {self.y}); velocity = {self.v}'
+    
+def calcFgVector(p1: planet, p2: planet) -> float: #Use an interpolation algorithm to get an output tuple
+    return G * p1.m * p2.m / ((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
+
+def calcdV(mass: float, force: tuple) -> tuple: #dV = a, rearrangement of F = ma -> a = F/m
+    return (force[0] / mass, force[1] / mass)
