@@ -1,81 +1,79 @@
-#Import libraries
+#Imports
 import math
-import random
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
-#Initialized Variables & Constants
-G = 6.674 * 10**(-11) #Update to the coulumb constant if you want to describe electrostatic interactions
+#Variables
 planets = []
-
+G = 6.67430
 #Functions
-def getColinearVector(magnitude: float, origin: tuple, target: tuple) -> tuple:
-    x1, y1 = origin
-    x2, y2 = target
-    dx, dy = x2 - x1, y2 - y1
-    m = dy / dx
-    theta = math.atan(m)
-    if dx > 0:
-        return (magnitude * math.cos(theta) + x1, magnitude * math.sin(theta) + y1)
-    else:
-        return (-magnitude * math.cos(theta) + x1, -magnitude * math.sin(theta) + y1)
+def GetOrientationVector(origin: tuple, target: tuple, magnitude: float) -> tuple:
+    """
+    NOTE: Will not adjust to put vector origin at origin position.
+    Vector origin will remain at (0,0), this must be changed beyond the function at own risk.
+    """
+    dx, dy = target[0] - origin[0], target[1] - origin[1]
+    theta = math.atan2(dy, dx)
+    return VectorizeScalar(magnitude, theta)
 
-def calcFgVector(origin: ("mass", "x", "y"), target: ("mass", "x", "y")) -> tuple:
-    m1, x1, y1 = origin
-    m2, x2, y2 = target
-    #Initialize global Gravity constant G
-    global G
-    #Calculate magnitude
-    F = G * m1 * m2 / ((x2 - x1)**2 + (y2 - y1)**2)
-    #turn magnitude (F) -> Vector
-    return getColinearVector(F, (x1, y1), (x2, y2))
-    
-def calcdV(mass: float, force: tuple) -> tuple: #dV = a, rearrangement of F = ma -> a = F/m
-    return (force[0] / mass, force[1] / mass)
+def VectorizeScalar(magnitude: float, theta: float) -> tuple:
+    return (magnitude * math.cos(theta), magnitude * math.sin(theta))
+
+def CalcFgVector(planet: "body") -> tuple:
+    Fx, Fy = 0, 0
+    for p in planets:
+        if not planet == p:
+            Fscalar = G * planet.m * p.m / ((p.x - planet.y)**2 + (p.y - planet.y)**2)
+            orientation = GetOrientationVector(planet.position(), p.position(), Fscalar)
+            Fx += orientation[0]
+            Fy += orientation[1]
+        continue
+    return (Fx, Fy)
+
+def dVtuple(F: tuple, mass: float, dt: float) -> tuple:
+    return (F[0] / mass * dt, F[1] / mass * dt)
 
 #Classes
-class planet:
-    #Basics of the class (Initialization & String representation)
+class body:
     def __init__(self, mass: float, pos: tuple, v0: tuple):
-        global planets
         self.m = mass
         self.x, self.y = pos
-        self.v = v0
-        
-    def __str__(self):
-        return f'planet: mass = {self.m}; position = ({self.x}, {self.y}); velocity = {self.v}'
+        self.vx, self.vy = v0
     
-    def update(self):
-        #Update velocity
-        xV, yV = self.v
-        for p in planets:
-            if not p == self:
-                dVtuple = calcdV(self.m, calcFgVector((self.m, self.x, self.y), (p.m, p.x, p.y)))
-                xV += dVtuple[0]
-                yV += dVtuple[1]
-            continue
-        self.v = (xV, yV)
-        #Update position
-        self.x += self.v[0]
-        self.y += self.v[1]
+    def __str__(self):
+        return f'body attributes: mass = {self.m}; position = ({self.x}, {self.y}); velocity = ({self.vx}, {self.vy})'
+    
+    def position(self):
+        return tuple([self.x, self.y])
+    
+    def velocity(self):
+        return tuple([self.vx, self.vy])
+    
+    def UpdateVelocity(self):
+        dV = dVtuple(CalcFgVector(self), self.m, 1)
+        self.vx += dV[0]
+        self.vy += dV[1]
+    
+    def UpdatePosition(self):
+        self.x += self.vx
+        self.y += self.vy
 
-#Creation
-#for i in range(3):
-#    planets.append(planet(50, (random.randint(0, 400), random.randint(0, 400)), (0,0)))
-p1 = planet(100, (20, 30), (0, 0))
-p2 = planet(400, (70, 100), (0,0))
-p3 = planet(50, (-30, 10), (0,0))
+#Simulation & Plotting
+p1 = body(1000, (10, -10), (0,0))
+p2 = body(1000, (-10, 10), (0,0))
 planets.append(p1)
 planets.append(p2)
-planets.append(p3)
 
-#Plotting
 figure = plt.figure()
 def animate(i):
-    plt.clf
+    plt.clf()
     for p in planets:
         plt.scatter(p.x, p.y, c="black")
-        p.update()
+        p.UpdateVelocity()
+        continue
+    for p in planets:
+        p.UpdatePosition()
+        continue
     return figure
-ani = FuncAnimation(figure, animate, interval = 3)
+
+ani = FuncAnimation(figure, animate, 200)
 ani.save("testanim.gif")
