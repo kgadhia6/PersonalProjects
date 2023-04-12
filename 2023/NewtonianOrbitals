@@ -1,36 +1,11 @@
 #Imports
 import math
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-#Variables
+
+#Variables & Initializations
 planets = []
-G = 6.67430
-#Functions
-def GetOrientationVector(origin: tuple, target: tuple, magnitude: float) -> tuple:
-    """
-    NOTE: Will not adjust to put vector origin at origin position.
-    Vector origin will remain at (0,0), this must be changed beyond the function at own risk.
-    """
-    dx, dy = target[0] - origin[0], target[1] - origin[1]
-    theta = math.atan2(dy, dx)
-    return VectorizeScalar(magnitude, theta)
-
-def VectorizeScalar(magnitude: float, theta: float) -> tuple:
-    return (magnitude * math.cos(theta), magnitude * math.sin(theta))
-
-def CalcFgVector(planet: "body") -> tuple:
-    Fx, Fy = 0, 0
-    for p in planets:
-        if not planet == p:
-            Fscalar = G * planet.m * p.m / ((p.x - planet.y)**2 + (p.y - planet.y)**2)
-            orientation = GetOrientationVector(planet.position(), p.position(), Fscalar)
-            Fx += orientation[0]
-            Fy += orientation[1]
-        continue
-    return (Fx, Fy)
-
-def dVtuple(F: tuple, mass: float, dt: float) -> tuple:
-    return (F[0] / mass * dt, F[1] / mass * dt)
+dt = .0005
+G = 6.6743 * 10**(-11)
 
 #Classes
 class body:
@@ -40,40 +15,65 @@ class body:
         self.vx, self.vy = v0
     
     def __str__(self):
-        return f'body attributes: mass = {self.m}; position = ({self.x}, {self.y}); velocity = ({self.vx}, {self.vy})'
-    
-    def position(self):
-        return tuple([self.x, self.y])
+        return f'n-body information: mass = {self.mass}; position = ({self.x}, {self.y}); velocity = ({self.vx}, {self.vy})'
     
     def velocity(self):
         return tuple([self.vx, self.vy])
     
-    def UpdateVelocity(self):
-        dV = dVtuple(CalcFgVector(self), self.m, 1)
-        self.vx += dV[0]
-        self.vy += dV[1]
+    def position(self):
+        return tuple([self.x, self.y])
     
-    def UpdatePosition(self):
-        self.x += self.vx
-        self.y += self.vy
+#Functions
+def FgScalar(body1: body, body2: body) -> float:
+    m1, m2 = body1.m, body2.m
+    r = math.sqrt( (body1.x - body2.x)**2 + (body1.y - body2.y)**2 )
+    return G * m1 * m2 / r**2
 
-#Simulation & Plotting
-p1 = body(1000, (10, -10), (0,0))
-p2 = body(1000, (-10, 10), (0,0))
-planets.append(p1)
-planets.append(p2)
+def FgVector(origin: body, attractor: body) -> tuple:
+    magnitude = FgScalar(origin, attractor)
+    dx, dy = attractor.x - origin.x, attractor.y - origin.y
+    theta = math.atan2(dy, dx)
+    return (magnitude * math.cos(theta), magnitude * math.sin(theta))
 
-figure = plt.figure()
-def animate(i):
-    plt.clf()
+def aVector(origin: body, attractor: body) -> tuple:
+    fx, fy = FgVector(origin, attractor)
+    ax = fx / origin.m
+    ay = fy / origin.m
+    return (ax, ay)
+
+def dvVector(origin: body, attractor: body) -> tuple:
+    ax, ay = aVector(origin, attractor)
+    dvx = ax * dt
+    dvy = ay * dt
+    return (dvx, dvy)
+
+def dvVectorSigma(origin: body, attractors: iter) -> tuple:
+    dvx, dvy = 0, 0
+    for attractor in attractors:
+        if not origin == attractor:
+            dv = dvVector(origin, attractor)
+            ddvx, ddvy = dv
+            dvx += ddvx
+            dvy += ddvy
+    return (dvx, dvy)
+
+#Body Initialization
+b1 = body(100, (-5, 5), (0, 0))
+b2 = body(50, (5, -5), (0,0))
+planets.append(b1)
+planets.append(b2)
+endt = 2
+
+positions = [[None] * endt] * len(planets)
+for t in range(endt):
     for p in planets:
-        plt.scatter(p.x, p.y, c="black")
-        p.UpdateVelocity()
-        continue
-    for p in planets:
-        p.UpdatePosition()
-        continue
-    return figure
-
-ani = FuncAnimation(figure, animate, 200)
-ani.save("testanim.gif")
+        dpv = dvVectorSigma(p, planets)
+        p.vx += dpv[0]
+        p.vy += dpv[1]
+    for i, p in enumerate(planets):
+        p.x += p.vx
+        p.y += p.vy
+        positions[i][t] = (p.position())
+        
+plt.scatter(*positions[0])
+plt.scatter(*positions[1])
