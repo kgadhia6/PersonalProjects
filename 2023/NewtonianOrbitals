@@ -77,3 +77,9 @@ for t in range(endt):
         
 plt.scatter(*positions[0])
 plt.scatter(*positions[1])
+
+
+#NOTE
+#Be sure to make sure that all of the above functions are computing properly
+#Then give plotting a shot. Lines 60 onward are the ones you'll want to rework
+#And also convert everything over to numpy datatypes as much as possible or something
