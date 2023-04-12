@@ -1,85 +1,95 @@
 #Imports
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
-#Variables & Initializations
+#Variables
 planets = []
-dt = .0005
-G = 6.6743 * 10**(-11)
+dt = 0.05
+G = 6.6743 * 10**(-11) #Convert to Coulombs constant and treat mass as charge if you want to describe electrostatic interactions
 
 #Classes
 class body:
-    def __init__(self, mass: float, pos: tuple, v0: tuple):
+    def __init__(self, mass, pos, v0):
         self.m = mass
         self.x, self.y = pos
         self.vx, self.vy = v0
     
     def __str__(self):
-        return f'n-body information: mass = {self.mass}; position = ({self.x}, {self.y}); velocity = ({self.vx}, {self.vy})'
+        return f'body: mass = {self.m}; position = {self.position()}; velocity = {self.velocity()}'
     
-    def velocity(self):
-        return tuple([self.vx, self.vy])
+    def position(self) -> tuple:
+        return (self.x, self.y)
     
-    def position(self):
-        return tuple([self.x, self.y])
+    def velocity(self) -> tuple:
+        return (self.vx, self.vy)
     
+    def UpdatePosition(self):
+        self.x += self.vx
+        self.y += self.vy
+
 #Functions
-def FgScalar(body1: body, body2: body) -> float:
-    m1, m2 = body1.m, body2.m
-    r = math.sqrt( (body1.x - body2.x)**2 + (body1.y - body2.y)**2 )
-    return G * m1 * m2 / r**2
+def hypot(p1: tuple, p2: tuple) -> float:
+    x1, y1 = p1
+    x2, y2 = p2
+    return math.sqrt( (x1 - x2)**2 + (y1 - y2)**2 )
 
-def FgVector(origin: body, attractor: body) -> tuple:
-    magnitude = FgScalar(origin, attractor)
-    dx, dy = attractor.x - origin.x, attractor.y - origin.y
-    theta = math.atan2(dy, dx)
-    return (magnitude * math.cos(theta), magnitude * math.sin(theta))
-
-def aVector(origin: body, attractor: body) -> tuple:
-    fx, fy = FgVector(origin, attractor)
-    ax = fx / origin.m
-    ay = fy / origin.m
-    return (ax, ay)
-
-def dvVector(origin: body, attractor: body) -> tuple:
-    ax, ay = aVector(origin, attractor)
-    dvx = ax * dt
-    dvy = ay * dt
-    return (dvx, dvy)
-
-def dvVectorSigma(origin: body, attractors: iter) -> tuple:
-    dvx, dvy = 0, 0
+def CalcdV(origin: body, attractors: iter) -> tuple:
+    #Calculate total force vector
+    Fx, Fy = 0, 0
     for attractor in attractors:
-        if not origin == attractor:
-            dv = dvVector(origin, attractor)
-            ddvx, ddvy = dv
-            dvx += ddvx
-            dvy += ddvy
+        if not attractor == origin:
+            mag = G * origin.m * attractor.m / hypot(origin.position(), attractor.position())**2
+            dx, dy = attractor.x - origin.x, attractor.y - origin.y
+            theta = math.atan2(dy, dx)
+            dFx, dFy = mag * math.cos(theta), mag * math.sin(theta)
+            Fx += dFx
+            Fy += dFy
+    #Convert force vector to acceleration via rearrangement of F=ma
+    ax, ay = Fx / origin.m, Fy / origin.m
+    #And then convert acceleration vector to dv vector via rearrangement of a = dv/dt
+    dvx, dvy = ax * dt, ay * dt
+    #And then return our dv vector
     return (dvx, dvy)
 
-#Body Initialization
-b1 = body(100, (-5, 5), (0, 0))
-b2 = body(50, (5, -5), (0,0))
-planets.append(b1)
-planets.append(b2)
-endt = 2
+#Initialize planets
+p1 = body(10, (-5, 5), (0,20))
+p2 = body(10, (5, -5), (0,0))
+planets.append(p1)
+planets.append(p2)
 
-positions = [[None] * endt] * len(planets)
-for t in range(endt):
-    for p in planets:
-        dpv = dvVectorSigma(p, planets)
-        p.vx += dpv[0]
-        p.vy += dpv[1]
-    for i, p in enumerate(planets):
-        p.x += p.vx
-        p.y += p.vy
-        positions[i][t] = (p.position())
-        
-plt.scatter(*positions[0])
-plt.scatter(*positions[1])
+#Now we get on with the show
+tset = np.arange(0, .10, dt) #Set up t
 
+#Now we set up the logging array
+perplan = [[[], []]]
+positions = perplan * len(planets)
+for i in range(len(planets)):
+    perplanet = perplan.copy()
+    positions.append(perplanet)
+    
+for ti, t in enumerate(tset):
+    #First up, logging the positions of all the planets
+    for index, attractor in enumerate(planets):
+        print(index)
+        positions[index][0].append(attractor.x)
+        positions[index][1].append(attractor.y)
+        #Then we move onto velocity
+        v = CalcdV(attractor, planets)
+        attractor.vx += v[0]
+        attractor.vy += v[1]
+    #Then we finally update position
+    for attractor in planets:
+        attractor.UpdatePosition()
 
-#NOTE
-#Be sure to make sure that all of the above functions are computing properly
-#Then give plotting a shot. Lines 60 onward are the ones you'll want to rework
-#And also convert everything over to numpy datatypes as much as possible or something
+for index, attractor in enumerate(planets):
+    plt.plot(positions[index][0], positions[index][1])
+    plt.show()
+#plt.show()
+#    plt.scatter(positions[index][0][0], positions[index][0][1])
+
+#[planet: [[x], [y]] ] * len(planets)
+#positions[index][0]
+
+#position = [planet: [ [x0, x1], [y0, y1] ] ] * len(planets)
+#x = position[index][0]
