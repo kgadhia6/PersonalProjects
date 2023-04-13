@@ -19,3 +19,6 @@ Utilizes numpy, and matplotlib.
 
 3DRK4.py: Plots the solutions of a system of ordinary differential equations using an implementation of the 4th order Runge-Kutta algorithm.
 Utilizes numpy, and matplotlib.
+
+NewtonianOrbitals.py: Plots the orbits of n-number of planets. Might be a bit numerically unstable, but I pulled an object-oriented approach this time, next time I'll stick to functional programming to see if I can do better.
+Utilizes numpy (Generates t, that's all), and matplotlib. Also uses the built-in Python C-math library.
