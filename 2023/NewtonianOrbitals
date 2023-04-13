@@ -5,8 +5,9 @@ import numpy as np
 
 #Variables
 planets = []
-dt = 0.05
+dt = .0005
 G = 6.6743 * 10**(-11) #Convert to Coulombs constant and treat mass as charge if you want to describe electrostatic interactions
+softening_factor = 0
 
 #Classes
 class body:
@@ -39,7 +40,7 @@ def CalcdV(origin: body, attractors: iter) -> tuple:
     Fx, Fy = 0, 0
     for attractor in attractors:
         if not attractor == origin:
-            mag = G * origin.m * attractor.m / hypot(origin.position(), attractor.position())**2
+            mag = G * origin.m * attractor.m / (hypot(origin.position(), attractor.position()) + softening_factor)**2
             dx, dy = attractor.x - origin.x, attractor.y - origin.y
             theta = math.atan2(dy, dx)
             dFx, dFy = mag * math.cos(theta), mag * math.sin(theta)
@@ -53,43 +54,31 @@ def CalcdV(origin: body, attractors: iter) -> tuple:
     return (dvx, dvy)
 
 #Initialize planets
-p1 = body(10, (-5, 5), (0,20))
-p2 = body(10, (5, -5), (0,0))
+p1 = body(1, (0, 0), (-.000002,0))
+p2 = body(0.75, (0, .003), (.000002, 0))
 planets.append(p1)
 planets.append(p2)
 
 #Now we get on with the show
-tset = np.arange(0, .10, dt) #Set up t
+tset = np.arange(0, 2, dt) #Set up t
 
 #Now we set up the logging array
-perplan = [[[], []]]
-positions = perplan * len(planets)
-for i in range(len(planets)):
-    perplanet = perplan.copy()
-    positions.append(perplanet)
+positions = [[[attractor.x], [attractor.y]] for attractor in planets]
     
 for ti, t in enumerate(tset):
-    #First up, logging the positions of all the planets
+    #First up, update positions
     for index, attractor in enumerate(planets):
-        print(index)
-        positions[index][0].append(attractor.x)
-        positions[index][1].append(attractor.y)
-        #Then we move onto velocity
         v = CalcdV(attractor, planets)
         attractor.vx += v[0]
         attractor.vy += v[1]
+        #Now we log information
+        positions[index][0].append(attractor.x)
+        positions[index][1].append(attractor.y)
+        #Then we move onto velocity
     #Then we finally update position
     for attractor in planets:
         attractor.UpdatePosition()
-
 for index, attractor in enumerate(planets):
+    plt.scatter(positions[index][0][0], positions[index][1][0])
     plt.plot(positions[index][0], positions[index][1])
-    plt.show()
-#plt.show()
-#    plt.scatter(positions[index][0][0], positions[index][0][1])
-
-#[planet: [[x], [y]] ] * len(planets)
-#positions[index][0]
-
-#position = [planet: [ [x0, x1], [y0, y1] ] ] * len(planets)
-#x = position[index][0]
+plt.show()
