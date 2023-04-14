@@ -22,3 +22,10 @@ Utilizes numpy, and matplotlib.
 
 NewtonianOrbitals.py: Plots the orbits of n-number of planets. Might be a bit numerically unstable, but I pulled an object-oriented approach this time, next time I'll stick to functional programming to see if I can do better.
 Utilizes numpy (Generates t, that's all), and matplotlib. Also uses the built-in Python C-math library.
+
+DiffusiveSIR.py: Plots a diffusion based SIR model. Utilizes numpy, and matplotlib. I also used the reference gray-scott diffusion-reaction model in ReferenceMaterials for this heavily. Code just adds a bunch of functions to the console, run the following to actually get something.
+
+```py
+help(simulate)
+simulate(40, 100, 200, 10, .2, .4, .2, .04, .02, .25)
+```
