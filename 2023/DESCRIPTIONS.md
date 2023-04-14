@@ -29,3 +29,12 @@ DiffusiveSIR.py: Plots a diffusion based SIR model. Utilizes numpy, and matplotl
 help(simulate)
 simulate(40, 100, 200, 10, .2, .4, .2, .04, .02, .25)
 ```
+As for what's going on, compile the following latex code as well.
+```latex
+\textrm{SIR Model with Diffusion}\\
+\partial_tS=D_S\nabla^2S-\frac{\beta IS}{N},\\
+\partial_tI=D_I\nabla^2I+\frac{\beta IS}{N} - \gamma I,\\
+\partial_tR=D_R\nabla^2R+\gamma I,\\
+\textrm{Where $D_S$, $D_I$, and $D_R$ are diffusion constants}\\
+\textrm{This is a variant of a reaction-diffusion equation}
+```
