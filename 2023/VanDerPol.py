@@ -51,7 +51,7 @@ x = fwdeuler(init, vdp, dt, len(td))[:,0]
 plt.plot(td, x)
 plt.title(r'$\mathrm{Van\ der\ Pol\ Oscillator},\ \mu = $' + fr'${mu}$' + '\n' + r"$x^{\prime\prime} - \mu (1-x^2)x^{\prime} + x = 0$")
 plt.xlabel(r'$X$ axis')
-plt.ylabel(r'$Y$ axis')
+plt.ylabel(r'Time')
 
 #And then show
 plt.show()
