@@ -38,3 +38,5 @@ As for what's going on, compile the following latex code as well.
 \textrm{Where $D_S$, $D_I$, and $D_R$ are diffusion constants}\\
 \textrm{This is a variant of a reaction-diffusion equation}
 ```
+
+HeatDiffusion.py: Generates a 2D animation of "heat" diffusing across an object, where the equation is that partial derivative of the heat function "u" over time is equal to the laplacian of u. Utilizes numpy, and matpltolib. Also uses the built-in Python C-math library.
