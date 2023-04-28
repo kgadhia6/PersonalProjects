@@ -42,3 +42,5 @@ As for what's going on, compile the following latex code as well.
 HeatDiffusion.py: Generates a 2D animation of "heat" diffusing across an object, where the equation is that partial derivative of the heat function "u" over time is equal to the laplacian of u. Utilizes numpy, and matplotlib. Also uses the built-in Python C-math library.
 
 ODEPlotter2D.py: Plots the phase map and specified solution curves of 2D systems of differential equations. Currently configured to Van der Pol Oscillator system. Utilizes numpy, and matplotlib.
+
+VanDerPol.py: Proof of concept for plotting second order differential equations using the fwdeuler function previously developed. Currently configured as a Van der Pol oscillator. Utilizes numpy, and matplotlib.
